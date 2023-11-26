@@ -8,15 +8,15 @@ import RouteError from "./pages/RouteError";
 
 function App() {
   return (
-    <>
-      <Nav />
+    <div className="app-container">
       <Routes>
         <Route exact path="/" element={<Home />}></Route>
         <Route path="/feed" element={<Feed />}></Route>
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="*" element={<RouteError />}></Route>
       </Routes>
-    </>
+      <Nav />
+    </div>
   );
 }
 

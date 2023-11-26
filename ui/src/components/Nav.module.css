@@ -1,0 +1,9 @@
+.container {
+    float: right;
+    padding: 10px;
+    padding-right: 30px;
+}
+
+.container a {
+    margin-left: 15px;
+}
