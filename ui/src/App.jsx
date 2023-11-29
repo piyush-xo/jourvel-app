@@ -15,7 +15,7 @@ function App() {
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="*" element={<RouteError />}></Route>
       </Routes>
-      <Nav />
+      {/* <Nav /> */}
     </div>
   );
 }

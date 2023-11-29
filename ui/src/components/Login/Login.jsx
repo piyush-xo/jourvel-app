@@ -1,12 +1,22 @@
 import "./Login.css";
-
+import {user} from "../../data/Data";
+import { useState } from "react";
 const Login = () => {
-
+  const [error, setError] = useState("");
   const handleLogin = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData);
     console.log("login", formJson);
+    if(formJson.email !== user.email) {
+      setError("👽 User not found");
+      return;
+    }
+    else if(formJson.password !== user.password) {
+      setError("👀 Wrong password");
+      return;
+    }
+    console.log("Logged In");
   } 
 
   const handleRegister = (event) => {
@@ -39,7 +49,11 @@ const Login = () => {
             placeholder="Password"
             required
           />
-          <button type="submit">Log in</button>
+          <div style={{display:"flex", flexDirection: "column", alignItems:"center"}}>
+            <button type="submit" style={{marginBottom:"2%"}}>Log in</button>
+            <p className="error" style={{margin:"0", height: "15px",color:"#B8390E", borderRadius: "4px", fontWeight: "500", fontSize:"14px", backgroundColor: "#e0dede", padding:"3px 5px 5px"}}>{error}</p>
+          </div>
+          {/* <button type="submit">Log in</button> */}
         </form>
       </div>
 
@@ -53,6 +67,7 @@ const Login = () => {
             type="username"
             name="username"
             placeholder="Username"
+            min="5"
             required
           />
           <input
@@ -67,6 +82,7 @@ const Login = () => {
             type="password"
             name="password"
             placeholder="Password"
+            min="8"
             required
           />
           <button type="submit">Register</button>

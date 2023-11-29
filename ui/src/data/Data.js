@@ -1,0 +1,1 @@
+export const user = {username: "bunny69420", email: "bunny69420@gmail.com", password: "kingbunny"}
