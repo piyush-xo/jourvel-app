@@ -1,8 +1,11 @@
 import "./Login.css";
 import {user} from "../../data/Data";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
+  const navigate = useNavigate();
   const [error, setError] = useState("");
+
   const handleLogin = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -17,6 +20,7 @@ const Login = () => {
       return;
     }
     console.log("Logged In");
+    navigate("/feed");
   } 
 
   const handleRegister = (event) => {
@@ -24,6 +28,7 @@ const Login = () => {
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData);
     console.log("register", formJson);
+    navigate("/feed");
   }
 
   return (
@@ -49,9 +54,9 @@ const Login = () => {
             placeholder="Password"
             required
           />
-          <div style={{display:"flex", flexDirection: "column", alignItems:"center"}}>
+          <div style={{display:"flex", flexDirection: "column", alignItems:"center", minHeight:"80px"}}>
             <button type="submit" style={{marginBottom:"2%"}}>Log in</button>
-            <p className="error" style={{margin:"0", height: "15px",color:"#B8390E", borderRadius: "4px", fontWeight: "500", fontSize:"14px", backgroundColor: "#e0dede", padding:"3px 5px 5px"}}>{error}</p>
+            {(error.length > 0) && <p className="error" style={{margin:"0", height: "15px",color:"#B8390E", borderRadius: "4px", fontWeight: "500", fontSize:"14px", backgroundColor: "#e0dede", padding:"3px 5px 5px"}}>{error}</p>}
           </div>
           {/* <button type="submit">Log in</button> */}
         </form>
