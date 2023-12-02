@@ -1,35 +1,40 @@
 import "./Login.css";
-import {user} from "../../data/Data";
+import { user } from "../../data/Data";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logIn } from "../../store/AuthSlice";
+
 const Login = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const dispatch = useDispatch();
 
   const handleLogin = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData);
     console.log("login", formJson);
-    if(formJson.email !== user.email) {
+    if (formJson.email !== user.email) {
       setError("👽 User not found");
       return;
-    }
-    else if(formJson.password !== user.password) {
+    } else if (formJson.password !== user.password) {
       setError("👀 Wrong password");
       return;
     }
     console.log("Logged In");
+    dispatch(logIn({ username: user.username, email: user.email }));
     navigate("/feed");
-  } 
+  };
 
   const handleRegister = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData);
     console.log("register", formJson);
+    dispatch(logIn({ username: formJson.username, email: formJson.email }));
     navigate("/feed");
-  }
+  };
 
   return (
     <div className="main">
@@ -38,7 +43,7 @@ const Login = () => {
       <div className="login">
         <form className="form" onSubmit={handleLogin}>
           <label htmlFor="chk" aria-hidden="true">
-          Hi again!
+            Hi again!
           </label>
           <input
             className="input"
@@ -54,9 +59,34 @@ const Login = () => {
             placeholder="Password"
             required
           />
-          <div style={{display:"flex", flexDirection: "column", alignItems:"center", minHeight:"80px"}}>
-            <button type="submit" style={{marginBottom:"2%"}}>Log in</button>
-            {(error.length > 0) && <p className="error" style={{margin:"0", height: "15px",color:"#B8390E", borderRadius: "4px", fontWeight: "500", fontSize:"14px", backgroundColor: "#e0dede", padding:"3px 5px 5px"}}>{error}</p>}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              minHeight: "80px",
+            }}
+          >
+            <button type="submit" style={{ marginBottom: "2%" }}>
+              Log in
+            </button>
+            {error.length > 0 && (
+              <p
+                className="error"
+                style={{
+                  margin: "0",
+                  height: "15px",
+                  color: "#B8390E",
+                  borderRadius: "4px",
+                  fontWeight: "500",
+                  fontSize: "14px",
+                  backgroundColor: "#e0dede",
+                  padding: "3px 5px 5px",
+                }}
+              >
+                {error}
+              </p>
+            )}
           </div>
           {/* <button type="submit">Log in</button> */}
         </form>

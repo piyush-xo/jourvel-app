@@ -5,7 +5,7 @@ import Login from "../components/Login/Login";
 
 function Home() {
   const [showLogin, setShowLogin] = useState(false);
-  console.log(showLogin);
+  // console.log(showLogin);
   return (
     <div className={styles.container}>
       {showLogin ? <Login /> : <div className={styles.title}>
