@@ -4,34 +4,54 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logIn } from "../../store/AuthSlice";
+import { baseUrl } from "../../utils/BaseURL";
 
 const Login = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const dispatch = useDispatch();
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData);
     console.log("login", formJson);
-    if (formJson.email !== user.email) {
+    const res = await fetch(`${baseUrl}/api/users/login`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formJson),
+    });
+    const data = await res.json();
+    console.log(data);
+    if (res.status === 404) {
       setError("👽 User not found");
       return;
-    } else if (formJson.password !== user.password) {
+    } else if (res.status === 401) {
       setError("👀 Wrong password");
       return;
     }
     console.log("Logged In");
-    dispatch(logIn({ username: user.username, email: user.email }));
+    dispatch(logIn({ username: data.username, email: data.email }));
     navigate("/feed");
   };
 
-  const handleRegister = (event) => {
+  const handleRegister = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData);
     console.log("register", formJson);
+
+    const res = await fetch(`${baseUrl}/api/users/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formJson),
+    });
+    const data = await res.json();
+    console.log(data);
     dispatch(logIn({ username: formJson.username, email: formJson.email }));
     navigate("/feed");
   };
