@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const UserModel = require("../models/UserModel");
 const generateToken = require("../utils/tokenGenerator");
 const router = express.Router();
-const {userVerification} = require("../middleware/authMiddelware");
+const { userVerification } = require("../middleware/authMiddelware");
 
 router.post("/register", async (req, res) => {
   console.log(req.body);
@@ -21,11 +21,12 @@ router.post("/register", async (req, res) => {
     });
     console.log(newUser);
     const token = generateToken(newUser._id);
-    res.cookie("token", token, {
-      withCredentials: true,
-      httpOnly: false,
-    });
-    res.send({ user: { id: newUser._id, username: newUser.username } }, 201);
+    // res.cookie("token", token, {
+    //   withCredentials: true,
+    //   httpOnly: false,
+    //   path: "/",
+    // });
+    res.send({ token, user: { id: newUser._id, username: newUser.username } }, 201);
   } catch (err) {
     console.log(err);
     res.send({ error: "Server error" }, 500);
@@ -40,20 +41,27 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.send({ error: "User not found" }, 404);
     }
-    const isCorrectPassword = await bcrypt.compare(req.body.password,user.password);
+    const isCorrectPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
     console.log(isCorrectPassword);
     if (!isCorrectPassword) {
       return res.send({ error: "Wrong password" }, 401);
     }
     const token = generateToken(user._id);
-    res.cookie("token", token, { withCredentials: true, httpOnly: false });
-    res.send({user: { id: user._id, username: user.username } }, 200);
+    // res.cookie("token", token, {
+    //   withCredentials: true,
+    //   httpOnly: false,
+    //   path: "/",
+    // });
+    res.send({token, user: { id: user._id, username: user.username } }, 200);
   } catch (err) {
     console.log(err);
     res.send({ error: "Server error" }, 500);
   }
 });
 
-router.post('/',userVerification)
+router.post("/", userVerification);
 
 module.exports = router;

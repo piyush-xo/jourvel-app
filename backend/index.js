@@ -4,6 +4,11 @@ const mongoose = require("mongoose");
 // const UserModel = require("./models/UserModel");
 const userRoutes = require("./routes/userRoutes");
 
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+};
+
 const connectDB = async () => {
   try {
     console.log("connecting");
@@ -18,7 +23,7 @@ const connectDB = async () => {
 };
 
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 connectDB();

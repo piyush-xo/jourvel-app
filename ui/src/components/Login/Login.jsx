@@ -1,5 +1,4 @@
 import "./Login.css";
-import { user } from "../../data/Data";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -16,25 +15,31 @@ const Login = () => {
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData);
     console.log("login", formJson);
-    const res = await fetch(`${baseUrl}/api/users/login`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formJson),
-    });
-    const data = await res.json();
-    console.log(data);
-    if (res.status === 404) {
-      setError("👽 User not found");
-      return;
-    } else if (res.status === 401) {
-      setError("👀 Wrong password");
-      return;
+    try {
+      const res = await fetch(`${baseUrl}/api/users/login`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formJson),
+        // credentials: 'include'
+      });
+      const data = await res.json();
+      console.log(data);
+      if (res.status === 404) {
+        setError("👽 User not found");
+        return;
+      } else if (res.status === 401) {
+        setError("👀 Wrong password");
+        return;
+      }
+      console.log("Logged In");
+      dispatch(logIn({ token: data.token, user: data.user }));
+      localStorage.setItem("token", data.token);
+      navigate("/feed");
+    } catch (err) {
+      console.log("Server error");
     }
-    console.log("Logged In");
-    dispatch(logIn({ username: data.username, email: data.email }));
-    navigate("/feed");
   };
 
   const handleRegister = async (event) => {
@@ -42,18 +47,23 @@ const Login = () => {
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData);
     console.log("register", formJson);
-
-    const res = await fetch(`${baseUrl}/api/users/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formJson),
-    });
-    const data = await res.json();
-    console.log(data);
-    dispatch(logIn({ username: formJson.username, email: formJson.email }));
-    navigate("/feed");
+    try {
+      const res = await fetch(`${baseUrl}/api/users/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formJson),
+        // credentials: "include",
+      });
+      const data = await res.json();
+      console.log(data);
+      dispatch(logIn({ token: data.token, user: data.user }));
+      localStorage.setItem("token", data.token);
+      navigate("/feed");
+    } catch (err) {
+      console.log("Server error");
+    }
   };
 
   return (
