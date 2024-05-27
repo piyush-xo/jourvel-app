@@ -15,7 +15,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("use");
+    console.log("useApp");
     const verifyToken = async () => {
       const token = localStorage.getItem("token");
       if (!token) {

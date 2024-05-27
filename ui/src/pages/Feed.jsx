@@ -3,6 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { logIn, logOut } from "../store/AuthSlice";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../utils/BaseURL";
+import styles from "./Feed.module.css";
+import Gallery from "../components/Feed/Gallery";
+import Header from "../components/Header";
 
 function Feed() {
   const navigate = useNavigate();
@@ -10,8 +13,9 @@ function Feed() {
   const auth = useSelector((state) => state.auth);
   console.log({ auth });
   const [user, setUser] = useState(auth.user);
+
   useEffect(() => {
-    console.log("use");
+    console.log("useFeed");
     const verifyToken = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -25,7 +29,8 @@ function Feed() {
       const data = await res.json();
 
       res.status === 200
-        ? dispatch(logIn({ token: token, user: data.user })) && setUser(data.user)
+        ? dispatch(logIn({ token: token, user: data.user })) &&
+          setUser(data.user)
         : (localStorage.removeItem("token"), navigate("/"));
     };
     verifyToken();
@@ -38,11 +43,16 @@ function Feed() {
   };
 
   return (
-    <>
-    {user ? <div>
-      Hi {user.username}
-      <button onClick={logoutHandler}>Logout</button>
-    </div> : <p>Loading...</p>}</>
+    <div className={styles.container}>
+      {!user ? (
+        <p>Loading...</p>
+      ) : (
+        <div className={styles.content}>
+          <Header user={user} logoutHandler={logoutHandler} heading={"Your Trips ✈️"}/>
+          <Gallery />
+        </div>
+      )}
+    </div>
   );
 }
 

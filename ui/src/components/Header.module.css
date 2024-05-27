@@ -1,0 +1,13 @@
+.header {
+    padding: 20px 10px;
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.heading {
+    margin: 0px;
+    font-size: 36px;
+    font-weight: 600;
+}

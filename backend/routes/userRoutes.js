@@ -4,7 +4,9 @@ const UserModel = require("../models/UserModel");
 const generateToken = require("../utils/tokenGenerator");
 const router = express.Router();
 const { userVerification } = require("../middleware/authMiddelware");
+const jwt = require("jsonwebtoken");
 
+//user registeration 
 router.post("/register", async (req, res) => {
   console.log(req.body);
   try {
@@ -33,6 +35,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
+//user login
 router.post("/login", async (req, res) => {
   console.log(req.body);
   try {
@@ -62,6 +65,46 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/", userVerification);
+//user data retrival
+router.get("/:id", userVerification, async(req, res) => {
+  const userData = await UserModel.findOne({_id: req.params.id})
+  console.log(userData);
+  if(!userData) {
+    return res.send({ error: "User not found" }, 404);
+  }
+  res.send(userData, 200);
+})
+
+//user data update
+router.post("/:id", userVerification, async(req, res) => {
+  console.log("update", req.body);
+})
+
+//user verification
+router.post("/", async(req, res) => {
+  try {
+    const token = req.header("x-auth-token");
+    if (!token) {
+      return res.send({ error: "Access denied. Token not found." }, 401);
+    }
+    jwt.verify(token, "secret123", async (err, verifiedUser) => {
+      if (err) {
+        return res.send(
+          { error: "Access denied. Token verification failed." },
+          401
+        );
+      }
+      const user = await UserModel.findById(verifiedUser.id);
+      if (!user) {
+        return res.send({ error: "Access denied. User not found." }, 401);
+      }
+      console.log("userVerification")
+      res.send({ user: { id: user._id, username: user.username } }, 200);  
+    });
+  } catch (err) {
+    console.log(err);
+    res.send({ error: "Server error" }, 500);
+  }
+});
 
 module.exports = router;

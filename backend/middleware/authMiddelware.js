@@ -18,7 +18,9 @@ module.exports.userVerification = async (req, res, next) => {
       if (!user) {
         return res.send({ error: "Access denied. User not found." }, 401);
       }
-      return res.send({ user: { id: user._id, username: user.username } }, 200);
+      console.log("userVerification")
+      // res.send({ user: { id: user._id, username: user.username } }, 200);  
+      next();
     });
   } catch (err) {
     console.log(err);
